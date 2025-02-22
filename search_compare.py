@@ -73,21 +73,30 @@ def binary_search_recursive(a_list,item):
             else:
                 return binary_search_recursive(a_list[midpoint + 1:], item)
 
-
-if __name__ == "__main__":
-    """Main entry point"""
-    the_size = 500
-
+def benchmark_search(search_func, the_size,item):
     total_time = 0
     for i in range(100):
         mylist = get_me_random_list(the_size)
-        # sorting is not needed for sequential search.
-        mylist = sorted(mylist)
-
+        mylist = sorted(mylist) if search_func in [binary_search_iteractive, binary_search_recursive, ordered_sequential_search] else mylist
+        
         start = time.time()
-        check = binary_search_iterative(mylist, 99999999)
+        search_func(mylist, item)
         time_spent = time.time() - start
         total_time += time_spent
 
     avg_time = total_time / 100
-    print(f"Binary Search Iterative took {avg_time:10.7f} seconds to run, on average for a list of {the_size} elements")
+    print (f"{search_func.__name__} took {avg_time:10.7f} seconds to run, on average for a list of {the_size} elements")
+
+
+if __name__ == "__main__":
+    """Main entry point"""
+    the_size = 500
+    item_to_search = 99999999
+
+for size in [500, 1000, 5000]:
+    print(f"Testing search algorithms with list size {size}:")
+    benchmark_search(sequential_search, size, item_to_search)
+    benchmark_search(ordered_sequential_search, size, item_to_search)
+    benchmark_search(binary_search_iterative, size, item_to_search)
+    benchmark_search(binary_seach_recursive, size, item_to_search)
+    print("-" * 50)
